@@ -9,7 +9,7 @@ trigger:
   paths:
     include:
       - nstck-api
-      - azure-pipelines-nstck-api
+      - azure-pipelines-nstck-api.yml
 
 variables:
   BuildConfiguration: $(Pipeline.Workspace)/.build-configuration
@@ -18,9 +18,10 @@ steps:
   - task: DotNetCoreCLI@2
     displayName: "dotnet restore"
     inputs:
-      workingDirectory: nstck-api
-      command: restore
-      projects: nstck-api/nStck.API.csproj
+      feedsToUse: "select"
+      feedRestore: "nstck-api"
+      projects: "**/*.csproj"
+      includeNuGetOrg: true
 
   - task: DotNetCoreCLI@2
     displayName: "dotnet build"
