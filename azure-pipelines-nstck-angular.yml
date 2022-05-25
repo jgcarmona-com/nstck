@@ -1,5 +1,5 @@
 pool:
-  name: Azure Pipelines - nStck Angular
+  name: Azure Pipelines
   demands: npm
 
 trigger:
