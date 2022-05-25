@@ -1,0 +1,47 @@
+pool:
+  name: Azure Pipelines - nStck Angular
+  demands: npm
+
+#Your build pipeline references an undefined variable named ‘NSTCK_ANG_SITE_CACHE_RESTORED’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
+
+steps:
+- task: Cache@2
+  displayName: 'Cache npm packages'
+  inputs:
+    key: '**/package-lock.json, !**/node_modules/**/package-lock.json, !**/.*/**/package-lock.json'
+    path: 'node_modules'
+    cacheHitVar: 'NSTCK_ANG_SITE_CACHE_RESTORED'
+
+- script: |
+   echo "*** Cache Restored? :: $(NSTCK_ANG_SITE_CACHE_RESTORED) ***"
+   
+  displayName: 'PRINT CacheRestore'
+
+- task: Npm@1
+  displayName: 'Install Angular CLI'
+  inputs:
+    command: custom
+    verbose: false
+    customCommand: 'install -g @angular/cli'
+  condition: eq(variables['NSTCK_ANG_SITE_CACHE_RESTORED'],False)
+
+- task: Npm@1
+  displayName: 'Install Project Dependencies'
+  inputs:
+    verbose: false
+  condition: eq(variables['NSTCK_ANG_SITE_CACHE_RESTORED'],False)
+
+- script: |
+   npm run build
+   
+  displayName: Build
+
+- task: ArchiveFiles@2
+  displayName: 'Archive DIST FOLDER'
+  inputs:
+    rootFolderOrFile: dist/
+    includeRootFolder: false
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+
