@@ -2,6 +2,15 @@ pool:
   name: Azure Pipelines - nStck Angular
   demands: npm
 
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - nstck-angular
+
 variables:
   NSTCK_ANG_SITE_CACHE_RESTORED: $(Pipeline.Workspace)/.nstck-angular-cache
 
