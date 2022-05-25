@@ -1,0 +1,19 @@
+<mat-toolbar color="primary" fxLayout="row">
+  <span fxHide fxShow.gt-xs>nStck</span>
+  <span fxFlex="2 1 auto"></span>
+
+  <a fxLayoutAlign="center center" fxHide fxShow.gt-xs mat-button routerLink="/" routerLinkActive="active">
+    <mat-icon>home</mat-icon> Home
+  </a>
+  <button fxLayoutAlign="center center" fxHide fxShow.gt-sm mat-button routerLink="/weird-route"
+    routerLinkActive="active">
+    Weird
+  </button>
+  <button fxLayoutAlign="center center" fxHide fxShow.gt-md mat-button routerLink="/legal"
+    routerLinkActive="active">
+    <mat-icon>balance </mat-icon> Legal
+  </button>
+  <button fxLayoutAlign="center center" mat-icon-button>
+    <mat-icon>menu</mat-icon>
+  </button>
+</mat-toolbar>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" >
+    <defs>
+        <style>
+            @import url("https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i");
+        </style>
+    </defs>
+    <style><![CDATA[svg text{stroke:none}]]></style>
+  <text font-family="Roboto">
+    <tspan x="0" y="15" style="fill:red;">{{&#160;</tspan>
+    <tspan style="fill:#6f42c1">nStck</tspan>
+    <tspan style="fill:red;">&#160;}}</tspan>
+  </text>
+  {{ nStck }}
+</svg>
