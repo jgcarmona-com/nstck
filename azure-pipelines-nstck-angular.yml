@@ -10,6 +10,7 @@ trigger:
   paths:
     include:
       - nstck-angular
+      - azure-pipelines-nstck-angular
 
 variables:
   NSTCK_ANG_SITE_CACHE_RESTORED: $(Pipeline.Workspace)/.nstck-angular-cache
