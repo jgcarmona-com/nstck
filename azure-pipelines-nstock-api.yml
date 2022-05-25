@@ -1,0 +1,31 @@
+pool:
+  name: Azure Pipelines
+#Your build pipeline references an undefined variable named ‘BuildConfiguration’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
+
+variables:
+  BuildConfiguration: $(Pipeline.Workspace)/.build-configuration
+
+steps:
+  - task: DotNetCoreCLI@2
+    displayName: "dotnet restore"
+    inputs:
+      workingDirectory: nstck-api
+      command: restore
+      projects: nstck-api/nStck.API.csproj
+
+  - task: DotNetCoreCLI@2
+    displayName: "dotnet build"
+    inputs:
+      workingDirectory: nstck-api
+
+  - task: DotNetCoreCLI@2
+    displayName: "dotnet publish"
+    inputs:
+      workingDirectory: nstck-api
+      command: publish
+      arguments: "--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)"
+
+  - task: PublishBuildArtifacts@1
+    displayName: "Publish API Artifact"
+    inputs:
+      ArtifactName: API

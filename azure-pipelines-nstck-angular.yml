@@ -19,7 +19,7 @@ steps:
     displayName: "Cache npm packages"
     inputs:
       key: "**/package-lock.json, !**/node_modules/**/package-lock.json, !**/.*/**/package-lock.json"
-      path: "node_modules"
+      path: "nstck-angular/node_modules"
       cacheHitVar: "NSTCK_ANG_SITE_CACHE_RESTORED"
 
   - script: |
@@ -31,6 +31,7 @@ steps:
     displayName: "Install Angular CLI"
     inputs:
       command: custom
+      workingDir: nstck-angular
       verbose: false
       customCommand: "install -g @angular/cli"
     condition: eq(variables['NSTCK_ANG_SITE_CACHE_RESTORED'],False)
@@ -38,18 +39,19 @@ steps:
   - task: Npm@1
     displayName: "Install Project Dependencies"
     inputs:
+      workingDir: nstck-angular
       verbose: false
     condition: eq(variables['NSTCK_ANG_SITE_CACHE_RESTORED'],False)
 
-  - script: |
-      npm run build
+  - script: npm run build
+     workingDirectory: nstck-angular    
 
     displayName: Build
 
   - task: ArchiveFiles@2
     displayName: "Archive DIST FOLDER"
     inputs:
-      rootFolderOrFile: dist/
+      rootFolderOrFile: nstck-angular/dist/
       includeRootFolder: false
 
   - task: PublishBuildArtifacts@1
