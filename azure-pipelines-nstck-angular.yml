@@ -44,8 +44,7 @@ steps:
     condition: eq(variables['NSTCK_ANG_SITE_CACHE_RESTORED'],False)
 
   - script: npm run build
-     workingDirectory: nstck-angular    
-
+    workingDirectory: nstck-angular
     displayName: Build
 
   - task: ArchiveFiles@2
