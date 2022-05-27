@@ -12,7 +12,7 @@ trigger:
       - azure-pipelines-nstck-api.yml
 
 variables:
-  BuildConfiguration: $(Pipeline.Workspace)/.build-configuration
+  BuildConfiguration: Release
 
 steps:
   - task: DotNetCoreCLI@2
