@@ -23,7 +23,9 @@ stages:
     strategy:
       runOnce:
         deploy:
-        - bash: echo "We have just deployed to staging"
+        - job: Deploy to staging
+          steps:
+          - bash: echo "Deploy to staging"
     
 
 - stage: Production
@@ -34,4 +36,6 @@ stages:
     strategy:
       runOnce:
         deploy:
-        - bash: echo "We have just deployed to production"
+        - job: Deploy to prod
+          steps:
+          - bash: echo "Deploy to prod"
