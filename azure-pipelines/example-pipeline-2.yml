@@ -1,41 +1,37 @@
 pool:
   name: Azure Pipelines
 
-trigger:
-  batch: true
-  branches:
-    include:
-      - master
-  paths:
-    include:
-      - nstck-api
-      - azure-pipelines-nstck-api.yml
+trigger: none
 
-variables:
-  BuildConfiguration: Release
+stages:
+- stage: A
+  jobs:
+  - job: Build
+    steps:
+    - bash: echo "Imagine this is our build output"
+  - job: Tests
+    steps:
+    - bash: echo "This can be our Unit Tests execution output"
+    - bash: echo "This can be our Integration Tests execution output"
 
-steps:
-  - task: DotNetCoreCLI@2
-    displayName: "dotnet restore"
-    inputs:
-      feedsToUse: "select"
-      feedRestore: "nstck-api"
-      projects: "**/*.csproj"
-      includeNuGetOrg: true
+- stage: Staging
+  jobs:
+  
+  - deployment: 'StagingDeployment'
+    displayName: Staging
+    environment: 'ApprovalNotRequired'
+    strategy:
+      runOnce:
+        deploy:
+        - bash: echo "We have just deployed to staging"
+    
 
-  - task: DotNetCoreCLI@2
-    displayName: "dotnet build"
-    inputs:
-      workingDirectory: nstck-api
-
-  - task: DotNetCoreCLI@2
-    displayName: "dotnet publish"
-    inputs:
-      workingDirectory: nstck-api
-      command: publish
-      arguments: "--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)"
-
-  - task: PublishBuildArtifacts@1
-    displayName: "Publish API Artifact"
-    inputs:
-      ArtifactName: API
+- stage: Production
+  jobs:
+  - deployment: 'MyDeployment2'
+    displayName: MyDeployment2
+    environment: 'ApprovalRequired'
+    strategy:
+      runOnce:
+        deploy:
+        - bash: echo "We have just deployed to production"
