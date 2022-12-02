@@ -1,0 +1,27 @@
+---
+# Replaces tststandalone calculator versions in requirements.txt if TSTSTANDALONE_GT3R23_VERSION or TSTSTANDALONE_LMDH_VERSION or TSTSTANDALONE_9RE_VERSION or variable are set
+steps:
+  - bash: |
+      if [ -z "${TSTSTANDALONE_GT3R23_VERSION}" ]; then
+        echo "##[debug]Version hasn't changed"
+      else
+        echo "##[debug]Using TSTSTANDALONE_GT3R23_VERSION: $TSTSTANDALONE_GT3R23_VERSION"
+        sed -i.bak "s/tststandalone-gt3r23==.*/tststandalone-gt3r23==$TSTSTANDALONE_GT3R23_VERSION/g" requirements.txt
+        rm requirements.txt.bak 2> /dev/null
+      fi
+      if [ -z "${TSTSTANDALONE_LMDH_VERSION}" ]; then
+        echo "##[debug]Version hasn't changed"
+      else
+        echo "##[debug]Using TSTSTANDALONE_LMDH_VERSION: $TSTSTANDALONE_LMDH_VERSION"
+        sed -i.bak "s/tststandalone-lmdh==.*/tststandalone-lmdh==$TSTSTANDALONE_LMDH_VERSION/g" requirements.txt
+        rm requirements.txt.bak 2> /dev/null
+      fi
+      if [ -z "${TSTSTANDALONE_9RE_VERSION}" ]; then
+        echo "##[debug]Version hasn't changed"
+      else
+        echo "##[debug]Using TSTSTANDALONE_9RE_VERSION: $TSTSTANDALONE_9RE_VERSION"
+        sed -i.bak "s/tststandalone-9re==.*/tststandalone-9re==$TSTSTANDALONE_9RE_VERSION/g" requirements.txt
+        rm requirements.txt.bak 2> /dev/null
+      fi
+    workingDirectory: $(System.DefaultWorkingDirectory)/simas
+    displayName: Replace TSTSTANDALONE versions

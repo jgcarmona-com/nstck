@@ -1,0 +1,37 @@
+---
+
+parameters:
+  - name: app_name
+    type: string
+  # A list of steps that are executed before the tests run.
+  # A sample could be "./gradlew clean bootJar".
+  - name: preTestSteps
+    type: stepList
+    default: []
+  - name: postTestSteps
+    type: stepList
+    default: []
+  - name: pythonVersion
+    type: string
+    default: '3.x'
+
+steps:
+  - task: UsePythonVersion@0
+    displayName: "Run Pytest python version to 3.x"
+    inputs:
+      versionSpec: '${{parameters.pythonVersion}}'
+      architecture: 'x64'
+  - ${{ each step in parameters.preTestSteps }}:
+      - ${{ each pair in step }}:
+          ${{ pair.key }}: ${{ pair.value }}
+  - bash: |
+      pip install -r ./requirements.txt
+      pip install pytest pytest-azurepipelines
+      pip install pytest-cov
+      cd src
+      python -m pytest --cov-report=xml --cov=.
+    workingDirectory: $(System.DefaultWorkingDirectory)/${{parameters.app_name}}
+    displayName: "pytest"
+  - ${{ each step in parameters.postTestSteps }}:
+      - ${{ each pair in step }}:
+          ${{ pair.key }}: ${{ pair.value }}

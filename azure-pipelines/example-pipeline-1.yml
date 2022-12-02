@@ -1,0 +1,36 @@
+pool:
+  name: Azure Pipelines
+
+trigger: none
+
+stages:
+- stage: A
+  jobs:
+  - job: A1
+    steps:
+    - bash: echo "A1"
+  - job: A2
+    steps:
+    - bash: echo "A2"
+
+- stage: B
+  jobs:
+  - job: B1
+    steps:
+    - bash: echo "B1"
+  - job: B2
+    steps:
+    - bash: echo "B2"
+    
+
+- stage: C
+  jobs:
+  - job: C1
+    steps:
+    - bash: echo "C1"
+  - job: C2
+    steps:
+    - bash: echo "C2"
+  - job: C3
+    steps:
+    - bash: echo "C3"

@@ -1,0 +1,39 @@
+pool:
+  name: Azure Pipelines
+
+trigger: none
+
+stages:
+- stage: CI
+  jobs:
+  - job: Build
+    steps:
+    - bash: echo "Imagine this is our build output"
+  - job: Tests
+    steps:
+    - bash: echo "This can be our Unit Tests execution output"
+    - bash: echo "This can be our Integration Tests execution output"
+
+- stage: Staging
+  jobs:
+  
+  - deployment: 'Staging Deployment'
+    displayName: Staging
+    environment: 'ApprovalNotRequired'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - bash: echo "Deploy to Staging Jobs goes here"
+    
+
+- stage: Production
+  jobs:
+  - deployment: 'Production Deployment'
+    displayName: Production
+    environment: 'ApprovalRequired'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - bash: echo "Deployment to Production Jobs goes here"

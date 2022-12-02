@@ -1,0 +1,82 @@
+---
+
+# This pipeline builds and deploy changes on dev or any feature branch and deploys it to DEV Cluster
+
+trigger: none
+
+name: $(Date:yyyy-MM-dd)$(Rev:.r)
+
+variables:
+  - group: dev-settings
+
+pool:
+  vmImage: ubuntu-20.04
+
+stages:
+
+  - stage: run_tests
+    displayName: run tests
+    jobs:
+      - job:
+        displayName: "run pytest"
+        steps:
+          - template: pipeline_templates/run_pytests.yml
+            parameters:
+              app_name: my-python-app
+              pythonVersion: "3.6"
+              preTestSteps:
+                - template: pipeline_templates/my-python-app_version.yml
+                - template: pipeline_templates/gitlab_credentials.yml
+                  parameters:
+                    app_name: my-python-app
+              postTestSteps:
+                - bash: |
+                    rm $PWD/pip.conf
+                  workingDirectory: $(System.DefaultWorkingDirectory)/my-python-app
+                  displayName: Clean GitLab credentials
+
+  - stage: build_image
+    displayName: build my-python-app image
+    dependsOn:
+      - run_tests
+    variables:
+      BRANCH_NAME: $[replace(coalesce(variables['System.PullRequest.SourceBranch'], variables['Build.SourceBranchName'], ''), 'refs/heads/','')]
+    jobs:
+      - template: pipeline_templates/docker_build.yml
+        parameters:
+          projectFolder: my-python-app
+          containerRegistry: $(SERVICE_CONNECTION_NAME_ACR_PROD)
+          containerRegistryName: $(CONTAINER_REGISTRY_NAME)
+          repositoryPrefix: data-platform
+          buildRequired: "true"
+          branchName: $(BRANCH_NAME)
+          preDockerSteps:
+            - template: pipeline_templates/my-python-app_version.yml
+            - template: pipeline_templates/gitlab_credentials.yml
+              parameters:
+                app_name: my-python-app
+
+  - stage: deploy_my-python-app_worker_dev
+    displayName: deploy my-python-app_worker to k8s
+    dependsOn:
+      - build_image
+    variables:
+      - group: my-python-app-dev
+      - group: data-platform-dev
+      - name: my-python-app_IMAGE_TAG
+        value: $[stageDependencies.build_image.expose_image_tag.outputs['vars.IMAGE_TAG']]
+    jobs:
+      - job: deploy_helm_charts
+        displayName: deploy helm charts
+        steps:
+          - bash: |
+              echo "##[debug] my-python-app_IMAGE_TAG: $my-python-app_IMAGE_TAG"
+            displayName: debug image tag
+          - template: pipeline_templates/k8s_deploy_app.yml
+            parameters:
+              env: dev
+              project_name: my-python-app
+              subscription: $(SERVICE_CONNECTION_NAME_ARM_DEV)
+              terraform_modules:
+                - api_management
+                - service_bus

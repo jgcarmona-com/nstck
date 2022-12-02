@@ -1,0 +1,33 @@
+---
+
+parameters:
+  - name: subscription
+    type: string
+  - name: env
+    type: string
+  - name: app_name
+    type: string
+  - name: function_name
+    type: string
+
+steps:
+  - template: terragrunt_init.yml
+    parameters:
+      subscription: ${{parameters.subscription}}
+  - bash: |
+      cd functions
+      APP_NAME=$(terragrunt output -raw ${{parameters.function_name}})
+      echo "##vso[task.setvariable variable=FUNCTION_APP_NAME;]$APP_NAME"
+      echo "##[debug]FUNCTION_APP_NAME: $APP_NAME"
+    workingDirectory: $(System.DefaultWorkingDirectory)/infrastructure/envs/${{parameters.env}}
+    displayName: "Expose vars for ${{parameters.app_name}}"
+  - download: current
+    displayName: "Downloading build for ${{parameters.app_name}}"
+    artifact: function_zipped_${{parameters.app_name}}
+  - task: AzureFunctionApp@1
+    displayName: "Deploying ${{parameters.app_name}}"
+    inputs:
+      azureSubscription: ${{parameters.subscription}}
+      appType: functionAppLinux
+      package: $(Pipeline.Workspace)/function_zipped_${{parameters.app_name}}/*.zip
+      appName: $(FUNCTION_APP_NAME)

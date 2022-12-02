@@ -3,7 +3,35 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nStck.API", "nStck.API\nStck.API.csproj", "{19D5EE05-9104-43CF-90DA-DE25077C1F36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nStck.API", "nStck.API\nStck.API.csproj", "{19D5EE05-9104-43CF-90DA-DE25077C1F36}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Azure-Pipelines", "Azure-Pipelines", "{0178A627-C59D-477F-B04F-5ED84C3BF0C3}"
+	ProjectSection(SolutionItems) = preProject
+		..\azure-pipelines\example-pipeline-1.yml = ..\azure-pipelines\example-pipeline-1.yml
+		..\azure-pipelines\example-pipeline-2.yml = ..\azure-pipelines\example-pipeline-2.yml
+		..\azure-pipelines\example-pipeline-3.yml = ..\azure-pipelines\example-pipeline-3.yml
+		..\azure-pipelines\example-pipeline-4.yml = ..\azure-pipelines\example-pipeline-4.yml
+		..\azure-pipelines\example-pipeline-5.yml = ..\azure-pipelines\example-pipeline-5.yml
+		..\azure-pipelines\example-pipeline-6.yml = ..\azure-pipelines\example-pipeline-6.yml
+		..\azure-pipelines\nstck-angular-pr.yml = ..\azure-pipelines\nstck-angular-pr.yml
+		..\azure-pipelines\nstck-angular.yml = ..\azure-pipelines\nstck-angular.yml
+		..\azure-pipelines\nstck-api-master.yml = ..\azure-pipelines\nstck-api-master.yml
+		..\azure-pipelines\nstck-api-pr.yml = ..\azure-pipelines\nstck-api-pr.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{F32B679F-88B8-4541-B339-C1107DEF302B}"
+	ProjectSection(SolutionItems) = preProject
+		..\azure-pipelines\templates\function_deploy.yml = ..\azure-pipelines\templates\function_deploy.yml
+		..\azure-pipelines\templates\gitlab_credentials.yml = ..\azure-pipelines\templates\gitlab_credentials.yml
+		..\azure-pipelines\templates\integration_test.yml = ..\azure-pipelines\templates\integration_test.yml
+		..\azure-pipelines\templates\run_pytests.yml = ..\azure-pipelines\templates\run_pytests.yml
+		..\azure-pipelines\templates\simas_version.yml = ..\azure-pipelines\templates\simas_version.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{E60DC599-CFA2-4D65-82C5-213CC8568C1C}"
+	ProjectSection(SolutionItems) = preProject
+		..\azure-pipelines\scripts\pypi_credentials.sh = ..\azure-pipelines\scripts\pypi_credentials.sh
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,6 +46,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F32B679F-88B8-4541-B339-C1107DEF302B} = {0178A627-C59D-477F-B04F-5ED84C3BF0C3}
+		{E60DC599-CFA2-4D65-82C5-213CC8568C1C} = {0178A627-C59D-477F-B04F-5ED84C3BF0C3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F24992C2-0D4F-48B9-AEF1-4ECCB3BB02A8}
