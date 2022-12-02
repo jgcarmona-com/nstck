@@ -1,0 +1,49 @@
+---
+
+parameters:
+  # The environment to be tested. Depending on the environment different test configurations are used, e.g. different environment files.
+  - name: environment
+    type: string
+    values:
+      - dev
+      - staging
+
+jobs:
+  - job: run_it_${{parameters.environment}}
+    displayName: Run Integration Tests (${{parameters.environment}})
+    variables:
+      testDirectory: ./integration_tests
+      junitReportFilePath: results/junitReport.xml
+    steps:
+      - bash: |
+          newman run MSPDP_Integration_Tests.postman_collection.json \
+            --environment MSPDP_Integration_Tests_${{parameters.environment}}.postman_environment.json \
+            --env-var "ocp_apim_subscription_key=$(ocp_apim_subscription_key)" \
+            --env-var "client_credentials_flow_client_secret=$(client_credentials_flow_client_secret)" \
+            --env-var "client_credentials_flow_client_secret_admin=$(client_credentials_flow_client_secret_admin)" \
+            --env-var "master_record_api_key=$(master_record_api_key)" \
+            --reporters junit,cli \
+            --reporter-junit-export $(junitReportFilePath) \
+            --suppress-exit-code
+        workingDirectory: $(testDirectory)
+        displayName: Run newman
+      - task: PublishTestResults@2
+        inputs:
+          testResultsFormat: JUnit
+          searchFolder: $(testDirectory)
+          testResultsFiles: $(junitReportFilePath)
+          mergeTestResults: true
+          failTaskOnFailedTests: true
+        displayName: Publish API Test Results (${{parameters.environment}})
+      - task: O365PostMessageBuild@0
+        condition: and(failed(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+        displayName: Post message to Teams
+        inputs:
+          addressType: 'url'
+          url: $(TEAMS_WEBHOOK_URL)
+          messageType: 'message'
+          title: 'Integration tests failed on ${{parameters.environment}}'
+          summary: 'Boom.'
+          text: 'Integration tests have failed. That''s all we know.'
+          includeLink: true
+          linkText: 'View Build Detail'

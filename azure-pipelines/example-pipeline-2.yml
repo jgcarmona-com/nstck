@@ -4,7 +4,7 @@ pool:
 trigger: none
 
 stages:
-- stage: A
+- stage: CI
   jobs:
   - job: Build
     steps:
@@ -17,23 +17,23 @@ stages:
 - stage: Staging
   jobs:
   
-  - deployment: 'StagingDeployment'
+  - deployment: 'Staging Deployment'
     displayName: Staging
     environment: 'ApprovalNotRequired'
     strategy:
       runOnce:
         deploy:
           steps:
-          - bash: echo "Deploy to staging"
+          - bash: echo "Deploy to Staging Jobs goes here"
     
 
 - stage: Production
   jobs:
-  - deployment: 'MyDeployment2'
-    displayName: MyDeployment2
+  - deployment: 'Production Deployment'
+    displayName: Production
     environment: 'ApprovalRequired'
     strategy:
       runOnce:
         deploy:
           steps:
-          - bash: echo "Deploy to prod"
+          - bash: echo "Deployment to Production Jobs goes here"
