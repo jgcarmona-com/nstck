@@ -1,7 +1,3 @@
----
-
-# This pipeline builds and deploy changes on dev or any feature branch and deploys it to DEV Cluster
-
 trigger: none
 
 name: $(Date:yyyy-MM-dd)$(Rev:.r)

@@ -1,0 +1,13 @@
+---
+# Replaces a dependency version in requirements.txt if APP_VERSION is set
+steps:
+  - bash: |
+      if [ -z "${APP_VERSION}" ]; then
+        echo "##[debug]Version hasn't changed"
+      else
+        echo "##[debug]Using APP_VERSION: $APP_VERSION"
+        sed -i.bak "s/my-dependency==.*/my-dependency==$APP_VERSION/g" requirements.txt
+        rm requirements.txt.bak 2> /dev/null
+      fi
+    workingDirectory: $(System.DefaultWorkingDirectory)/simas
+    displayName: Replace APP_VERSION version
